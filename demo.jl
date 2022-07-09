@@ -125,4 +125,3 @@ DTables.select(
     :Score => mean, # not parallel
     [] => ByRow(() -> Threads.threadid()) => :threadid, # parallel
 ) |> fetch
-
