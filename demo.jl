@@ -1,8 +1,5 @@
-using Pkg
-Pkg.activate(".")
-Pkg.add(url="https://github.com/JuliaParallel/DTables.jl")
-
 using DTables
+
 using RDatasets
 using Statistics
 using StatsBase
@@ -128,4 +125,4 @@ DTables.select(
     :Score => mean, # not parallel
     [] => ByRow(() -> Threads.threadid()) => :threadid, # parallel
 ) |> fetch
-    
+
