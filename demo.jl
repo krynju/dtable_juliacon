@@ -8,10 +8,8 @@ using OnlineStats
 
 @info Threads.nthreads()
 
-# N = 10_000_000
-# csize = 100_000
-N = 10_000_0
-csize = 100_0
+N = 10_000_000
+csize = 100_000
 
 
 # source DataFrame
@@ -68,37 +66,12 @@ length(f) / length(m) * 100
 # Step 4: stats (GCSEScore inside grade groupd)
 # let's use mapreduce
 
-assign_group(x) = begin
-    2 <= x < 3 && return "2-3"
-    3 <= x < 4 && return "3-4"
-    4 <= x <= 5 && return "4-5"
-end
-
-stats = mapreduce(
-    row -> (assign_group(row.Grade), row.GCSEScore),
-    fit!,
-    m,
-    init=GroupBy(String, Mean())
-) |> fetch
-
-# or simpler
-
 stats = mapreduce(
     row -> (row.Grade, row.GCSEScore),
     fit!,
     m,
     init=GroupBy(Float64, Mean())
 ) |> fetch
-
-using Plots
-bar(
-    stats.value.keys,
-    getproperty.(stats.value.vals, :μ),
-    xticks=stats.value.keys,
-    ylabel="avg GCSEScore",
-    xlabel="grade",
-    legend=:none,
-)
 
 
 # Step 5: groupby
@@ -108,16 +81,10 @@ gt.index
 
 r = reduce(fit!, gt, cols=[:Grade], init=Mean())
 r2 = fetch(r)
-bar(
-    r2.Lea,
-    getproperty.(r2.result_Grade, :μ),
-    ylabel="mean grade",
-    xlabel="lea"
-)
 
 # Extra: experimental DataFrames-like select
 
-DTables.select(
+a = DTables.select(
     dt,
     :Lea => :Lea2,
     :Score,
@@ -125,3 +92,5 @@ DTables.select(
     :Score => mean, # not parallel
     [] => ByRow(() -> Threads.threadid()) => :threadid, # parallel
 ) |> fetch
+
+unique(a.threadid)
