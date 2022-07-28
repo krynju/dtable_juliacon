@@ -14,7 +14,7 @@ csize = 100_000
 
 # source DataFrame
 df = let
-    d = dataset("mlmRev", "Chem97")[:, Not([5,6])]
+    d = dataset("mlmRev", "Chem97")[:, Not([5, 6])]
     cs = propertynames(d)[1:3]
     select(d,
         cs .=> (x -> parse.(Int16, unwrap.(x))) .=> cs,
@@ -53,7 +53,7 @@ b = 5 - _max * a
 m = map(
     row -> (;
         row...,
-        Grade=row.Score * a + b,
+        Grade=row.Score * a + b
     ),
     dt
 )
@@ -88,7 +88,7 @@ a = DTables.select(
     dt,
     :Lea => :Lea2,
     :Score,
-    :Score => ByRow(x-> x * a + b) => :Grade, # parallel,
+    :Score => ByRow(x -> x * a + b) => :Grade, # parallel,
     :Score => mean, # not parallel
     [] => ByRow(() -> Threads.threadid()) => :threadid, # parallel
 ) |> fetch

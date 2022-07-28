@@ -5,7 +5,7 @@ ENV["JULIA_MEMPOOL_EXPERIMENTAL_DISK_CACHE"] = "C:\\Users\\krynjupc\\.mempool\\d
 function view_cache()
     !isdir(ENV["JULIA_MEMPOOL_EXPERIMENTAL_DISK_CACHE"]) && return []
     map(
-        x -> (basename(x), round(filesize(x)/2^20, digits=2)),
+        x -> (basename(x), round(filesize(x) / 2^20, digits=2)),
         readdir(ENV["JULIA_MEMPOOL_EXPERIMENTAL_DISK_CACHE"], join=true)
     )
 end
@@ -15,20 +15,13 @@ using MemPool
 using Dagger
 
 N1 = 2^27 # 1GB
-d = DTable((a=rand(Int, N1),), N1÷100)
+d = DTable((a=rand(Int, N1),), N1 ÷ 100)
 map(x -> (r=x.a + 1,), d) |> fetch
 MemPool.GLOBAL_DEVICE[]
 view_cache()
 
 N2 = 3 * 2^27 # 3GB
-d = DTable((a=rand(Int, N2),), N2÷100)
-map(x -> (r=x.a + 1,), d) |> fetch
-MemPool.GLOBAL_DEVICE[]
-GC.gc()
-view_cache()
-
-N3 = 8 * 2^27 # 3GB
-d = DTable((a=rand(Int, N3),), N3÷100)
+d = DTable((a=rand(Int, N2),), N2 ÷ 100)
 map(x -> (r=x.a + 1,), d) |> fetch
 MemPool.GLOBAL_DEVICE[]
 GC.gc()
